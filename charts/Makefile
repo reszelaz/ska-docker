@@ -3,7 +3,7 @@ MAKEPATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 BASEDIR := $(notdir $(patsubst %/,%,$(dir $(MAKEPATH))))
 
 # find IP addresses of this machine, setting THIS_HOST to the first address found
-THIS_HOST := $(shell ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n1)
+THIS_HOST := $(shell /sbin/ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n1)
 DISPLAY := $(THIS_HOST):0
 XAUTHORITY ?= $(DISPLAY)
 KUBE_NAMESPACE ?= default
@@ -66,7 +66,7 @@ lint: ## lint check the helm chart
 		--set ingress.hostname=$(INGRESS_HOST)
 
 install: namespace mkcerts  ## install the helm chart
-	@helm install $(HELM_RELEASE) $(HELM_CHART)/
+	@helm install $(HELM_RELEASE) $(HELM_CHART)/ \
 		--wait \
 		--namespace $(KUBE_NAMESPACE) \
 		--set ingress.hostname=$(INGRESS_HOST) \
